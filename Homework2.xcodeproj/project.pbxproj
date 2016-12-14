@@ -11,6 +11,7 @@
 		C96D5E561E019CF300C204D1 /* LatticeNode.c in Sources */ = {isa = PBXBuildFile; fileRef = C96D5E541E019CF300C204D1 /* LatticeNode.c */; };
 		C96D5E591E019D6B00C204D1 /* SimpleCubicLattice.c in Sources */ = {isa = PBXBuildFile; fileRef = C96D5E571E019D6B00C204D1 /* SimpleCubicLattice.c */; };
 		C96D5E5C1E019E1C00C204D1 /* BodyCenteredCubicLattice.c in Sources */ = {isa = PBXBuildFile; fileRef = C96D5E5A1E019E1C00C204D1 /* BodyCenteredCubicLattice.c */; };
+		C96D5E5F1E01DD5100C204D1 /* BodyCenteredCubicLatticeRandom.c in Sources */ = {isa = PBXBuildFile; fileRef = C96D5E5D1E01DD5100C204D1 /* BodyCenteredCubicLatticeRandom.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +35,8 @@
 		C96D5E581E019D6B00C204D1 /* SimpleCubicLattice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleCubicLattice.h; sourceTree = "<group>"; };
 		C96D5E5A1E019E1C00C204D1 /* BodyCenteredCubicLattice.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BodyCenteredCubicLattice.c; sourceTree = "<group>"; };
 		C96D5E5B1E019E1C00C204D1 /* BodyCenteredCubicLattice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BodyCenteredCubicLattice.h; sourceTree = "<group>"; };
+		C96D5E5D1E01DD5100C204D1 /* BodyCenteredCubicLatticeRandom.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BodyCenteredCubicLatticeRandom.c; sourceTree = "<group>"; };
+		C96D5E5E1E01DD5100C204D1 /* BodyCenteredCubicLatticeRandom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BodyCenteredCubicLatticeRandom.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +70,8 @@
 			isa = PBXGroup;
 			children = (
 				C93831F21DF59C480014548E /* main.c */,
+				C96D5E5D1E01DD5100C204D1 /* BodyCenteredCubicLatticeRandom.c */,
+				C96D5E5E1E01DD5100C204D1 /* BodyCenteredCubicLatticeRandom.h */,
 				C96D5E5A1E019E1C00C204D1 /* BodyCenteredCubicLattice.c */,
 				C96D5E5B1E019E1C00C204D1 /* BodyCenteredCubicLattice.h */,
 				C96D5E571E019D6B00C204D1 /* SimpleCubicLattice.c */,
@@ -136,6 +141,7 @@
 			files = (
 				C96D5E561E019CF300C204D1 /* LatticeNode.c in Sources */,
 				C93831F31DF59C480014548E /* main.c in Sources */,
+				C96D5E5F1E01DD5100C204D1 /* BodyCenteredCubicLatticeRandom.c in Sources */,
 				C96D5E591E019D6B00C204D1 /* SimpleCubicLattice.c in Sources */,
 				C96D5E5C1E019E1C00C204D1 /* BodyCenteredCubicLattice.c in Sources */,
 			);
@@ -234,6 +240,13 @@
 		C93831F71DF59C480014548E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				OTHER_LDFLAGS = (
+					"-I/usr/local/include",
+					"-L/usr/local/lib",
+					"-lgsl",
+					"-lgslcblas",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -241,6 +254,13 @@
 		C93831F81DF59C480014548E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = /usr/local/include;
+				OTHER_LDFLAGS = (
+					"-I/usr/local/include",
+					"-L/usr/local/lib",
+					"-lgsl",
+					"-lgslcblas",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

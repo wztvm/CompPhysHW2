@@ -25,8 +25,26 @@ BodyCenteredCubicLattice * bcc_alloc(unsigned int n);
 
 void bcc_free(BodyCenteredCubicLattice *l);
 
-
-
 void bcc_init(BodyCenteredCubicLattice *l);
+
+typedef enum{First_Lattice = 0,Second_Lattice = 1} BCC_Sub_Lattice;
+
+LatticeNode *bcc_get_node(BodyCenteredCubicLattice *l,
+                          BCC_Sub_Lattice sub_lattice,
+                          unsigned int n);
+
+double bcc_long_range_order(BodyCenteredCubicLattice *l,NodeType A);
+
+double bcc_short_range_order(LatticeNode *node);
+
+double bcc_average_short_range_order(BodyCenteredCubicLattice *l);
+
+double bcc_energy(BodyCenteredCubicLattice *l,
+                  NodeType A,
+                  NodeType B,
+                  double energy_AA,
+                  double energy_BB,
+                  double energy_AB);
+
 
 #endif /* BodyCenteredCubicLattice_h */

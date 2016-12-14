@@ -27,5 +27,8 @@ void node_set_type(LatticeNode *node, NodeType type);
 
 NodeType node_get_type(LatticeNode *node);
 
+LatticeNode * node_get_neighbor(LatticeNode *node, unsigned int j);
+
+void node_swap_types(LatticeNode *n,LatticeNode *m);
 
 #endif /* LatticeNode_h */

@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include "SimpleCubicLattice.h"
 
+#pragma mark Life cycle
 BodyCenteredCubicLattice * bcc_alloc(unsigned int n){
     BodyCenteredCubicLattice * l = malloc(sizeof(BodyCenteredCubicLattice));
     l->sc[0] = sc_alloc(n);
@@ -66,4 +67,81 @@ void bcc_init(BodyCenteredCubicLattice *l){
         }
     }
     
+}
+
+#pragma mark Getters
+
+LatticeNode *bcc_get_node(BodyCenteredCubicLattice *l, BCC_Sub_Lattice sub_lattice, unsigned int n){
+    LatticeNode * node = (l->sc[sub_lattice]->nodes + n);
+    return node;
+}
+
+#pragma mark Calculated properties
+
+double bcc_long_range_order(BodyCenteredCubicLattice *l,NodeType A){
+    double long_range_order = 0.0;
+    double s = 0.0;
+    for(unsigned int i = 0; i < l->n_cells; i++){
+        if(bcc_get_node(l, First_Lattice, i)->type == A){
+            s += 1.0;
+        }
+    }
+    long_range_order = 2.0 * s / (double)l->n_cells - 1.0;
+    return long_range_order;
+}
+
+double bcc_short_range_order(LatticeNode *node){
+    double r = 0.0;
+    double q = 0.0;
+    for(unsigned int j = 0; j < 8; j++){
+        if(node_get_neighbor(node,j)->type == node->type){
+            q += 1.0;
+        }
+    }
+    r = (q-4.0)/4.0;
+    return r;
+}
+
+double bcc_average_short_range_order(BodyCenteredCubicLattice *l){
+    double average_short_range_order = 0.0;
+    
+    LatticeNode *node;
+    for(unsigned int i = 0; i < l->n_cells; i++){
+        node = bcc_get_node(l,First_Lattice,i);
+        average_short_range_order += bcc_short_range_order(node);
+    }
+    average_short_range_order /= l->n_cells;
+    return average_short_range_order;
+}
+
+double bcc_energy(BodyCenteredCubicLattice *l,
+                  NodeType A,
+                  NodeType B,
+                  double energy_AA,
+                  double energy_BB,
+                  double energy_AB){
+    double energy = 0.0;
+    double N_AA = 0.0;
+    double N_BB = 0.0;
+    double N_AB = 0.0;
+    LatticeNode *node;
+    NodeType I,J;
+    for(unsigned int i = 0; i < l->n_cells; i++){
+        node = bcc_get_node(l, First_Lattice, i);
+        I = node->type;
+        for(unsigned int j=0; j<8;j++){
+            J = node_get_neighbor(node, j)->type;
+            if(I == J){
+                if(I == A){
+                    N_AA += 1.0;
+                }else if(I == B){
+                    N_BB += 1.0;
+                }
+            }else{
+                N_AB += 1.0;
+            }
+        }
+    }
+    energy = N_AA * energy_AA + N_BB * energy_BB + N_AB * energy_AB;
+    return energy;
 }
