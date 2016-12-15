@@ -15,18 +15,13 @@
 
 typedef struct MetropolisOptionsTag{
     unsigned int n_iterations;
-    unsigned int auto_corr_k_max;
+    unsigned int equilibration_skip;
+    unsigned int auto_corr_k_step;
+    unsigned int auto_corr_n_k;
     unsigned int block_avg_block_size;
     double temperature;
 } MetropolisOptions;
-/*
-const MetropolisOptions MetropolisDefaultOptions = {
-    .n_iterations = 100,
-    .auto_corr_k_max = 100,
-    .block_avg_block_size = 100,
-    .temperature = 100
-};
-*/
+
 typedef struct MetropolisDataElementTag{
     double mean;
     double s_autocorrelation;

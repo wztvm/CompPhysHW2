@@ -24,13 +24,13 @@ double get_boltzmann_dist_frac(double delta_E, double T);
 double get_C(double* E, int N, double T);
 
 //Calculates the autocorrelation function for an array x of length N, for values of k = 0,...,k_max and inserts them into acorr
-void calc_autocorr(double* acorr, double* x, int N, int k_max);
+void calc_autocorr(double* acorr, double* x, int N,int k_step, int n_k);
 
 //Finds the index i of a zero starting from index x_0 in an array x of size N. When found either i or i + 1 is returned depending on if x[i] or x[i + 1] lies closest to 0. If no zero is found it returns -1 and prints this to stdout
 int find_zero(double* x, int N, int x_0);
 
 //Uses the autocorrelation function of the arrax x of size N with k_max + 1 points to calculate the statistical inefficiency s
-double get_s_autocorr(double* x, int N, int k_max);
+double get_s_autocorr(double* x, int N, unsigned int k_step,unsigned int n_k);
 
 //Returns an estimate of the statistical inefficiency s from an array x of size N using block-averaging with block size B
 double get_s_block_averaging(double* x, int N, int B);

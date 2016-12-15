@@ -48,19 +48,19 @@ double get_C(double* E, int N, double T) {
 }
 
 //Calculates the autocorrelation function for an array x of length N, for values of k = 0,...,k_max and inserts them into acorr
-void calc_autocorr(double* acorr, double* x, int N, int k_max) {
+void calc_autocorr(double* acorr, double* x, int N,int k_step, int n_k) {
     //Calculates the mean and variance of x for later use
     const double var_x = var(x, N);
     const double mean_x = mean(x, N);
     
     //Calculates the correlations function for all k
-    unsigned int i, k;
-    for (k = 0; k < k_max + 1; k++) {
-        acorr[k] = 0;
-        for (i = 0; i < N - k; i++) {
-            acorr[k] += (x[i + k] - mean_x) * (x[i] - mean_x);
+    unsigned int i, l;
+    for (l = 0; l < n_k; l++) {
+        acorr[l] = 0;
+        for (i = 0; i < N - l*k_step; i++) {
+            acorr[l] += (x[i + l*k_step] - mean_x) * (x[i] - mean_x);
         }
-        acorr[k] /= ((N - k) * var_x);
+        acorr[l] /= ((N - l*k_step) * var_x);
     }
 }
 
@@ -82,20 +82,20 @@ int find_zero(double* x, int N, int x_0) {
 }
 
 //Uses the autocorrelation function of the arrax x of size N with k_max + 1 points to calculate the statistical inefficiency s
-double get_s_autocorr(double* x, int N, int k_max) {
+double get_s_autocorr(double* x, int N, unsigned int k_step,unsigned int n_k) {
     //Calculates the autocorrelation function
-    double *acorr = malloc((k_max + 1) * sizeof(double));
-    calc_autocorr(acorr, x, N, k_max);
+    double *acorr = malloc((n_k + 1) * sizeof(double));
+    calc_autocorr(acorr, x, N, k_step, n_k);
     
     //Subtracts acorr_s = exp(-2) from acorr to flace the zero at k = s
     const double acorr_s = exp(-2.0);
-    for (unsigned int i = 0; i < k_max + 1; i++) {
+    for (unsigned int i = 0; i < n_k + 1; i++) {
         acorr[i] = acorr[i] - acorr_s;
     }
     
     //Finds and the zero for acorr[k] - acorr[s] starting from starting_index
     unsigned int starting_index = 0;
-    double s = (double) find_zero(acorr, k_max, starting_index);
+    double s = k_step*(double) find_zero(acorr, n_k, starting_index);
     
     //Frees F
     free(acorr); acorr = NULL;

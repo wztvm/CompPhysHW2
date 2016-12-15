@@ -252,7 +252,9 @@
 		C93831F71DF59C480014548E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				OTHER_LDFLAGS = (
 					"-I/usr/local/include",
@@ -261,12 +263,15 @@
 					"-lgslcblas",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_LDFLAGS = "";
 			};
 			name = Debug;
 		};
 		C93831F81DF59C480014548E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+				GCC_WARN_PEDANTIC = NO;
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				OTHER_LDFLAGS = (
 					"-I/usr/local/include",
@@ -275,6 +280,7 @@
 					"-lgslcblas",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_LDFLAGS = "";
 			};
 			name = Release;
 		};
