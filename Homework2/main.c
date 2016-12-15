@@ -15,9 +15,9 @@
 
 MetropolisOptions getMetropolisOptions(double temperature){
     const MetropolisOptions options = {
-        .n_iterations = 100000,
-        .auto_corr_k_max = 100,
-        .block_avg_block_size = 100,
+        .n_iterations = 10000,
+        .auto_corr_k_max = 3000,
+        .block_avg_block_size = 3000,
         .temperature = temperature
     };
     return options;
@@ -27,21 +27,20 @@ int main(int argc, const char * argv[]) {
     BodyCenteredCubicLattice * l = bcc_alloc(10);
     bcc_init(l);
     
-    bcc_type_count_prinf(l,NodeTypeCopper,NodeTypeZinc);
     
     // Setting up random number generation
     gsl_rng_env_setup();
     const gsl_rng_type *T = gsl_rng_default;
     gsl_rng *rng = gsl_rng_alloc(T);
     gsl_rng_set(rng,time(NULL));
-    for(int a = 0;a<5000;a++){
-    node_swap_types(bcc_get_node_random(l, rng),
-                        bcc_get_node_random(l, rng));
-    bcc_type_count_prinf(l,NodeTypeCopper,NodeTypeZinc);
-    }
     
     MetropolisOutput *output = malloc(sizeof(*output));
-    for(double temp=10000.0;temp<=100000.0;temp+=10000.0){
+    for(double temp=500.0;temp<=1000.0;temp+=100.0){
+        printf("\nMetropolis - Starting point\n");
+        double E = bcc_energy(l, NodeTypeCopper, NodeTypeZinc, -436.0, -113.0, -294.0);
+        printf("%0.5f\n",E);
+        bcc_type_count_prinf(l,NodeTypeCopper,NodeTypeZinc);
+        
         MetropolisOptions options = getMetropolisOptions(temp);
         metropolis(l,options,output);
         bcc_type_count_prinf(l,NodeTypeCopper,NodeTypeZinc);

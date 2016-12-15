@@ -34,10 +34,6 @@ NodeType node_get_type(LatticeNode *node){
     return node->type;
 }
 
-LatticeNode * node_get_neighbor(LatticeNode *node, unsigned int j){
-    return node->nearestNeighborList[j];
-}
-
 void node_swap_types(LatticeNode *n,LatticeNode *m){
     NodeType t = n->type;
     n->type = m->type;

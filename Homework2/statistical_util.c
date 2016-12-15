@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#define k_B 0.08617 //Boltzmann constant in meV / K
+#define k_B 0.08617330 //Boltzmann constant in meV / K
 
 
 //Returns the mean of an input array x of size N
@@ -88,7 +88,7 @@ double get_s_autocorr(double* x, int N, int k_max) {
     calc_autocorr(acorr, x, N, k_max);
     
     //Subtracts acorr_s = exp(-2) from acorr to flace the zero at k = s
-    const double acorr_s = exp(-2);
+    const double acorr_s = exp(-2.0);
     for (unsigned int i = 0; i < k_max + 1; i++) {
         acorr[i] = acorr[i] - acorr_s;
     }

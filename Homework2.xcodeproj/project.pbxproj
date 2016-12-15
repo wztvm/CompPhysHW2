@@ -252,6 +252,7 @@
 		C93831F71DF59C480014548E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_OPTIMIZATION_LEVEL = 0;
 				HEADER_SEARCH_PATHS = /usr/local/include;
 				OTHER_LDFLAGS = (
 					"-I/usr/local/include",

@@ -41,7 +41,9 @@ LatticeNode *bcc_get_node_neighbor(BodyCenteredCubicLattice *l,
 
 double bcc_long_range_order(BodyCenteredCubicLattice *l,NodeType A);
 
-double bcc_short_range_order(LatticeNode *node);
+double bcc_short_range_order(BodyCenteredCubicLattice *l,
+                             BCC_Sub_Lattice sub_lattice,
+                             unsigned int i);
 
 double bcc_average_short_range_order(BodyCenteredCubicLattice *l);
 
@@ -54,5 +56,7 @@ double bcc_energy(BodyCenteredCubicLattice *l,
 
 void bcc_type_count_prinf(BodyCenteredCubicLattice * l,
                            NodeType A,NodeType B);
+
+void bcc_printf(BodyCenteredCubicLattice *l);
 
 #endif /* BodyCenteredCubicLattice_h */

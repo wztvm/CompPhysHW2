@@ -68,7 +68,10 @@ void metropolis(BodyCenteredCubicLattice *l,
     gsl_rng_set(rng,time(NULL));
     
     for (unsigned int i = 1; i < o.n_iterations; i++) {
-        if(i%10000==0){
+        if(i%100==0){
+            printf("%i: ",i);
+            double E = bcc_energy(l, NodeTypeCopper, NodeTypeZinc, -436.0, -113.0, -294.0);
+            printf("%0.5f - ",E);
             bcc_type_count_prinf(l,NodeTypeCopper,NodeTypeZinc);
         }
         energy_old = E[i - 1];
@@ -85,6 +88,7 @@ void metropolis(BodyCenteredCubicLattice *l,
         
         //Metropolis step 3
         probability_ratio = get_boltzmann_dist_frac(delta_E, o.temperature);
+        
         if ((delta_E <= 0) || ( probability_ratio >= gsl_rng_uniform(rng))) {
             E[i] = energy_new;
         } else {

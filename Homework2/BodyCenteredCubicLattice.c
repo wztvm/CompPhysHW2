@@ -57,10 +57,10 @@ void bcc_init(BodyCenteredCubicLattice *l){
         for(unsigned int j = 0;j<8;j++){
             dx = j % 2; dy = (j/2)%2; dz = (j/4)%2;
             node = bcc_get_node_neighbor(l, First_Lattice, i, j);
-            bcc_get_node(l, Second_Lattice, i)->nearestNeighborList[j] = node;
+            bcc_get_node(l, First_Lattice, i)->nearestNeighborList[j] = node;
             
             node = bcc_get_node_neighbor(l, Second_Lattice, i, j);
-            bcc_get_node(l, First_Lattice, i)->nearestNeighborList[j] = node;
+            bcc_get_node(l, Second_Lattice, i)->nearestNeighborList[j] = node;
             
         }
     }
@@ -107,11 +107,17 @@ double bcc_long_range_order(BodyCenteredCubicLattice *l,NodeType A){
     return long_range_order;
 }
 
-double bcc_short_range_order(LatticeNode *node){
+double bcc_short_range_order(BodyCenteredCubicLattice *l,
+                             BCC_Sub_Lattice sub_lattice,
+                             unsigned int i){
     double r = 0.0;
     double q = 0.0;
+    LatticeNode *node = bcc_get_node(l, First_Lattice, i);
+    NodeType I,J;
+    I = node->type;
     for(unsigned int j = 0; j < 8; j++){
-        if(node_get_neighbor(node,j)->type == node->type){
+        J = node->nearestNeighborList[j]->type;
+        if(I == J){
             q += 1.0;
         }
     }
@@ -121,11 +127,9 @@ double bcc_short_range_order(LatticeNode *node){
 
 double bcc_average_short_range_order(BodyCenteredCubicLattice *l){
     double average_short_range_order = 0.0;
-    
-    LatticeNode *node;
+
     for(unsigned int i = 0; i < l->n_cells; i++){
-        node = bcc_get_node(l,First_Lattice,i);
-        average_short_range_order += bcc_short_range_order(node);
+        average_short_range_order += bcc_short_range_order(l,First_Lattice, i);
     }
     average_short_range_order /= l->n_cells;
     return average_short_range_order;
@@ -147,7 +151,7 @@ double bcc_energy(BodyCenteredCubicLattice *l,
         node = bcc_get_node(l, First_Lattice, i);
         I = node->type;
         for(unsigned int j=0; j<8;j++){
-            J = node_get_neighbor(node, j)->type;
+            J = node->nearestNeighborList[j]->type;
             if(I == J){
                 if(I == A){
                     N_AA += 1.0;
@@ -173,4 +177,25 @@ void bcc_type_count_prinf(BodyCenteredCubicLattice * l,NodeType A,NodeType B){
         (bcc_get_node(l, Second_Lattice, i)->type == A)?++NA2:++NB2;
     }
     printf("SC1(NA: %d, NB: %d) SC2(NA: %d, NB: %d) \n",NA1,NB1,NA2,NB2);
+}
+
+void bcc_printf(BodyCenteredCubicLattice *l){
+    for(int i=0;i<l->n_cells;i++){
+        LatticeNode *node = bcc_get_node(l, First_Lattice, i);
+        printf("Node(%i): ",i);
+        if(node_get_type(node)== NodeTypeCopper){
+            printf("A\n\t");
+        }else{
+            printf("B\n\t");
+        }
+        for(int j = 0;j<8;j++){
+            node = bcc_get_node_neighbor(l, First_Lattice, i, j);
+            if(node_get_type(node)== NodeTypeCopper){
+                printf("A, ");
+            }else{
+                printf("B, ");
+            }
+        }
+        printf("\n");
+    }
 }
