@@ -10,6 +10,7 @@
 #define BodyCenteredCubicLattice_h
 
 #include "SimpleCubicLattice.h"
+#include <stdio.h>
 
 typedef struct{
     SimpleCubicLattice * sc[2];
@@ -33,6 +34,11 @@ LatticeNode *bcc_get_node(BodyCenteredCubicLattice *l,
                           BCC_Sub_Lattice sub_lattice,
                           unsigned int n);
 
+LatticeNode *bcc_get_node_neighbor(BodyCenteredCubicLattice *l,
+                                   BCC_Sub_Lattice sub_lattice,
+                                   unsigned int n,
+                                   unsigned int j);
+
 double bcc_long_range_order(BodyCenteredCubicLattice *l,NodeType A);
 
 double bcc_short_range_order(LatticeNode *node);
@@ -46,5 +52,7 @@ double bcc_energy(BodyCenteredCubicLattice *l,
                   double energy_BB,
                   double energy_AB);
 
+void bcc_type_count_prinf(BodyCenteredCubicLattice * l,
+                           NodeType A,NodeType B);
 
 #endif /* BodyCenteredCubicLattice_h */

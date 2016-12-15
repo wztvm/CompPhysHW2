@@ -8,52 +8,49 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
-#include <gsl/gsl_rng.h>
-#include <time.h>
 
 #include "BodyCenteredCubicLattice.h"
-#include "BodyCenteredCubicLatticeRandom.h"
-#include "LatticeNode.h"
+#include "metropolis.h"
+#include <time.h>
 
-
-
-
-
-
+MetropolisOptions getMetropolisOptions(double temperature){
+    const MetropolisOptions options = {
+        .n_iterations = 100000,
+        .auto_corr_k_max = 100,
+        .block_avg_block_size = 100,
+        .temperature = temperature
+    };
+    return options;
+}
 
 int main(int argc, const char * argv[]) {
-    
-    BodyCenteredCubicLattice * l = bcc_alloc(3);
+    BodyCenteredCubicLattice * l = bcc_alloc(10);
     bcc_init(l);
     
+    bcc_type_count_prinf(l,NodeTypeCopper,NodeTypeZinc);
+    
+    // Setting up random number generation
     gsl_rng_env_setup();
-    const gsl_rng_type *T= gsl_rng_default;
+    const gsl_rng_type *T = gsl_rng_default;
     gsl_rng *rng = gsl_rng_alloc(T);
     gsl_rng_set(rng,time(NULL));
+    for(int a = 0;a<5000;a++){
+    node_swap_types(bcc_get_node_random(l, rng),
+                        bcc_get_node_random(l, rng));
+    bcc_type_count_prinf(l,NodeTypeCopper,NodeTypeZinc);
+    }
     
-    LatticeNode *n = bcc_get_node_random(l, rng);
-    LatticeNode *m = bcc_get_node_random(l, rng);
-    node_swap_types(n,m);
+    MetropolisOutput *output = malloc(sizeof(*output));
+    for(double temp=10000.0;temp<=100000.0;temp+=10000.0){
+        MetropolisOptions options = getMetropolisOptions(temp);
+        metropolis(l,options,output);
+        bcc_type_count_prinf(l,NodeTypeCopper,NodeTypeZinc);
     
-    double P = bcc_long_range_order(l,NodeTypeCopper);
-    
-    double r = bcc_short_range_order(n);
-    
-    double r_avg = bcc_average_short_range_order(l);
-    
-    double E_cu_cu = -436.0; // meV
-    double E_zn_zn = -113.0;
-    double E_cu_zn = -294.0;
-    
-    double energy = bcc_energy(l,NodeTypeCopper,NodeTypeZinc,
-                               E_cu_cu,E_zn_zn,E_cu_zn);
-    
-    printf("Lattice energy: %f\n",energy);
-    printf("Short range order: %f\n",r);
-    printf("Average short range order  %f\n", r_avg);
-    printf("Long range order %f\n",P);
-    
+        MetropolisDataElement_fprintf(stdout, output->energy, "Energy");
+        MetropolisDataElement_fprintf(stdout, output->long_range_order, "Long range order");
+        MetropolisDataElement_fprintf(stdout, output->short_range_order, "Short range order");
+        MetropolisDataElement_fprintf(stdout, output->heat_capacity, "Heat Capacity");
+    }
     bcc_free(l);
     return 0;
 }

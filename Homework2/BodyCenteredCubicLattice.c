@@ -45,24 +45,22 @@ void bcc_free(BodyCenteredCubicLattice *l){
 
 
 void bcc_init(BodyCenteredCubicLattice *l){
-    SimpleCubicLattice * sc1 = l->sc[0];
-    SimpleCubicLattice * sc2 = l->sc[1];
-    sc_init(sc1);
-    sc_init(sc2);
+    sc_init(l->sc[0]);
+    sc_init(l->sc[1]);
     
     LatticeNode * node;
     
     unsigned int dx,dy,dz;
     for(unsigned int i = 0; i < l->n_cells; i++){
-        sc1->nodes->type = NodeTypeCopper;
-        sc2->nodes->type = NodeTypeZinc;
+        bcc_get_node(l, First_Lattice, i)->type = NodeTypeCopper;
+        bcc_get_node(l, Second_Lattice, i)->type = NodeTypeZinc;
         for(unsigned int j = 0;j<8;j++){
             dx = j % 2; dy = (j/2)%2; dz = (j/4)%2;
-            node = sc_get_node_relative(sc1, i, dx-1, dy-1, dz-1);
-            sc1->nodes[i].nearestNeighborList[j] = node;
+            node = bcc_get_node_neighbor(l, First_Lattice, i, j);
+            bcc_get_node(l, Second_Lattice, i)->nearestNeighborList[j] = node;
             
-            node = sc_get_node_relative(sc1, i, dx, dy, dz);
-            sc2->nodes[i].nearestNeighborList[j] = node;
+            node = bcc_get_node_neighbor(l, Second_Lattice, i, j);
+            bcc_get_node(l, First_Lattice, i)->nearestNeighborList[j] = node;
             
         }
     }
@@ -73,6 +71,25 @@ void bcc_init(BodyCenteredCubicLattice *l){
 
 LatticeNode *bcc_get_node(BodyCenteredCubicLattice *l, BCC_Sub_Lattice sub_lattice, unsigned int n){
     LatticeNode * node = (l->sc[sub_lattice]->nodes + n);
+    return node;
+}
+
+LatticeNode *bcc_get_node_neighbor(BodyCenteredCubicLattice *l, BCC_Sub_Lattice sub_lattice, unsigned int i,unsigned int j){
+    unsigned int dx,dy,dz;
+    BCC_Sub_Lattice opposite;
+    if(sub_lattice == First_Lattice){
+        opposite = Second_Lattice;
+        dx = j % 2;
+        dy = (j/2)%2;
+        dz = (j/4)%2;
+    }else if(sub_lattice == Second_Lattice){
+        opposite = First_Lattice;
+        dx = (j % 2)-1;
+        dy = ( (j / 2) % 2 ) - 1;
+        dz = ( (j / 4) % 2 ) - 1;
+    }
+    unsigned int index = (i + dx + l->n * (dy + l->n * dz)) % l->n_cells;
+    LatticeNode * node = bcc_get_node(l, opposite, index);
     return node;
 }
 
@@ -144,4 +161,16 @@ double bcc_energy(BodyCenteredCubicLattice *l,
     }
     energy = N_AA * energy_AA + N_BB * energy_BB + N_AB * energy_AB;
     return energy;
+}
+
+void bcc_type_count_prinf(BodyCenteredCubicLattice * l,NodeType A,NodeType B){
+    unsigned int NA1 = 0;
+    unsigned int NB1 = 0;
+    unsigned int NA2 = 0;
+    unsigned int NB2 = 0;
+    for (int i=0;i< l->n_cells; i++){
+        (bcc_get_node(l, First_Lattice, i)->type == A)?++NA1:++NB1;
+        (bcc_get_node(l, Second_Lattice, i)->type == A)?++NA2:++NB2;
+    }
+    printf("SC1(NA: %d, NB: %d) SC2(NA: %d, NB: %d) \n",NA1,NB1,NA2,NB2);
 }
