@@ -11,6 +11,8 @@
 
 #include <stdio.h>
 
+#define k_B 0.08617330 //Boltzmann constant in meV / K
+
 //Returns the mean of an input array x of size N
 double mean(double* x, int N);
 

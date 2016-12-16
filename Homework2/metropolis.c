@@ -166,12 +166,22 @@ void metropolis(BodyCenteredCubicLattice *l,
         .std_block_average = sqrt(s_block_avg / n_iter * var(r, n_iter))
     };
 
+    
+    
+    double *heat_capacity_corr = malloc(n_iter * sizeof(double));
+    for (unsigned int i = 0; i < n_iter; i++) {
+        heat_capacity_corr[i] = (E[i] - out_energy.mean) * (E[i] - out_energy.mean);
+    }
+    s_autocorr = get_s_autocorr(heat_capacity_corr,n_iter,o.auto_corr_k_step, o.auto_corr_n_k);
+    s_block_avg = get_s_block_averaging(heat_capacity_corr, n_iter,o.block_avg_block_size);
     MetropolisDataElement out_heat_capacity = {
         .mean = get_C(E, o.n_iterations, o.temperature),
-        .s_autocorrelation = 0.0,
-        .s_block_average = 0.0,
-        .std_autocorrelation = 0.0,
-        .std_block_average= 0.0
+        .s_autocorrelation = s_autocorr,
+        .s_block_average = s_block_avg,
+        .std_autocorrelation =
+            sqrt(s_autocorr  * var(heat_capacity_corr, n_iter)) / (k_B * o.temperature * o.temperature),
+        .std_block_average =
+            sqrt(s_block_avg * var(heat_capacity_corr, n_iter)) / (k_B * o.temperature * o.temperature)
     };
     
     output->energy = out_energy;
@@ -185,8 +195,7 @@ void metropolis(BodyCenteredCubicLattice *l,
     free(r); r = NULL;
 }
 
-void MetropolisDataElement_fprintf(FILE*file,MetropolisDataElement e,
-                                   char* var_name){
+void MetropolisDataElement_fprintf(FILE*file,MetropolisDataElement e, char* var_name){
     fprintf(file, "(%s): \n\tmean: %0.4f, \n\ts_auto_corr: %0.4f, \n\tstd_auto_corr: %0.4f, "
             "\n\ts_block_average: %0.4f, \n\tstd_block_average: %0.4f \n",
             var_name, e.mean,
